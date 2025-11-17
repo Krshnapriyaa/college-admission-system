@@ -109,11 +109,11 @@ Open Browser 👉 **http://127.0.0.1:5000**
 
 | Screen | Screenshot |
 |--------|------------|
-| Dashboard | ![](screenshots/dashboard.png) |
-| Add Course | ![](screenshots/add_course.png) |
-| Add Applicant | ![](screenshots/add_applicant.png) |
-| View Applicants | ![](screenshots/view_applicants.png) |
-| Edit Status | ![](screenshots/status_update.png) |
-| Reports Pie Chart | ![](screenshots/reports.png) |
-| Trigger Backup Table | ![](screenshots/db_backup.png) |
+| Dashboard | ![](dashboard.png) |
+| Add Course | ![](add_course.png) |
+| Add Applicant | ![](add_applicant.png) |
+| View Applicants | ![](view_applicants.png) |
+| Edit Status | ![](status_update.png) |
+| Reports Pie Chart | ![](reports.png) |
+| Trigger Backup Table | ![](db_backup.png) |
 
