@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row my-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body d-flex gap-4">
+        <!-- Avatar -->
+        <div class="flex-shrink-0 text-center" style="width:140px">
+          {% set initials = (a.full_name.split()|map('slice',0,1)|join('') ).upper() %}
+          <div id="avatar" class="avatar-circle mb-2">{{ initials }}</div>
+          <div class="small text-muted">Applicant ID: <strong>#{{ a.id }}</strong></div>
+          <div class="mt-2">
+            <a href="{{ url_for('applicants') }}" class="btn btn-sm btn-outline-secondary w-100"><i class="fa-solid fa-arrow-left"></i> Back</a>
+          </div>
+        </div>
+
+        <!-- Main details -->
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h2 class="mb-1 display-6">{{ a.full_name }}</h2>
+              <div class="text-muted small">
+                <i class="fa-solid fa-envelope me-1"></i>
+                <a href="mailto:{{ a.email }}">{{ a.email }}</a>
+                &nbsp; · &nbsp;
+                <i class="fa-solid fa-phone me-1"></i>{{ a.phone or '—' }}
+              </div>
+            </div>
+
+            <div class="text-end">
+              <!-- Status badge -->
+              <div class="mb-2">
+                {% set s = a.status %}
+                <span class="badge status-badge fs-6">
+                  {{ s }}
+                </span>
+              </div>
+              <!-- Action buttons -->
+              <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalUpdateStatus">
+                  <i class="fa-solid fa-pen-to-square"></i> Update
+                </button>
+                <form method="post" action="{{ url_for('delete_applicant', id=a.id) }}" onsubmit="return confirm('Delete applicant?');">
+                  <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <dl class="row mb-0">
+                <dt class="col-sm-5 text-muted">Course</dt>
+                <dd class="col-sm-7">{{ a.course.name if a.course else '—' }}</dd>
+
+                <dt class="col-sm-5 text-muted">DOB</dt>
+                <dd class="col-sm-7">{{ a.dob or '—' }}</dd>
+
+                <dt class="col-sm-5 text-muted">Applied On</dt>
+                <dd class="col-sm-7">{{ a.application_date.strftime('%Y-%m-%d') }}</dd>
+              </dl>
+            </div>
+
+            <div class="col-md-6">
+              <dl class="row mb-0">
+                <dt class="col-sm-5 text-muted">Email Verified</dt>
+                <dd class="col-sm-7">No</dd>
+
+                <dt class="col-sm-5 text-muted">Contact</dt>
+                <dd class="col-sm-7">{{ a.phone or '—' }}</dd>
+
+                <dt class="col-sm-5 text-muted">Remarks</dt>
+                <dd class="col-sm-7">{{ a.remarks or 'No remarks yet.' }}</dd>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Optional longer notes / timeline -->
+          <div class="mt-4">
+            <h6 class="mb-2">Activity / Notes</h6>
+            <div class="p-3 bg-light rounded">
+              <!-- If you add a status_history table later, loop here -->
+              <small class="text-muted">No activity recorded. Use <strong>Update</strong> to add remarks or change status.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: Course card and quick actions -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-3">
+          <div class="flex-grow-1">
+            <h6 class="mb-1"><i class="fa-solid fa-book-open me-2"></i> Course</h6>
+            <div class="fw-semibold">{{ a.course.name if a.course else '—' }}</div>
+            <div class="small text-muted">{{ a.course.description or '' }}</div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="small text-muted">Seats</div>
+        {% if a.course %}
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <div class="w-100">
+            <div class="progress" style="height:10px">
+              <div class="progress-bar" role="progressbar" style="width: {{ (a.course.seats_taken / (a.course.seats_total or 1)) * 100 }}%"></div>
+            </div>
+            <div class="d-flex justify-content-between small mt-1">
+              <div><i class="fa-solid fa-user-check me-1"></i>{{ a.course.seats_taken }} taken</div>
+              <div>{{ a.course.seats_total }} total</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="mt-3 d-grid">
+          <a href="{{ url_for('applicants') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-list"></i> All applicants</a>
+          <a href="{{ url_for('courses') }}" class="btn btn-outline-primary mt-2"><i class="fa-solid fa-book"></i> Manage courses</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Small help card -->
+    <div class="card shadow-sm">
+      <div class="card-body small text-muted">
+        <h6 class="mb-2">Tips</h6>
+        <ul class="mb-0 ps-3">
+          <li>Shortlist applicants for review before admitting.</li>
+          <li>Add remarks to explain status changes.</li>
+          <li>Seat counts update automatically when status becomes <strong>Admitted</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Status Modal (same action as before) -->
+<div class="modal fade" id="modalUpdateStatus" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('update_status', id=a.id) }}">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Update applicant status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <select name="status" class="form-select">
+            {% for s in ['Applied','Shortlisted','Admitted','Rejected'] %}
+              <option value="{{ s }}" {% if a.status==s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Remarks</label>
+          <textarea name="remarks" rows="4" class="form-control">{{ a.remarks }}</textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit"><i class="fa-solid fa-save me-1"></i> Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- small inline script to set badge color based on status -->
+<script>
+  (function() {
+    const badge = document.querySelector('.status-badge');
+    if (!badge) return;
+    const s = badge.textContent.trim().toLowerCase();
+    const map = {
+      'admitted': 'bg-success text-white',
+      'shortlisted': 'bg-warning text-dark',
+      'rejected': 'bg-danger text-white',
+      'applied': 'bg-secondary text-white'
+    };
+    badge.className = 'badge status-badge fs-6 ' + (map[s] || 'bg-secondary text-white');
+
+    // colorize avatar circle if present
+    const avatar = document.getElementById('avatar');
+    if (avatar) {
+      // pick deterministic color from initials
+      const initials = avatar.textContent.trim();
+      let code = 0;
+      for (let i=0;i<initials.length;i++) code += initials.charCodeAt(i);
+      const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
+      avatar.style.background = colors[ code % colors.length ];
+      avatar.style.color = '#fff';
+    }
+  })();
+</script>
+{% endblock %}

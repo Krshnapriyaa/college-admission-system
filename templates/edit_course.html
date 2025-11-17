@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Edit Course</h2>
+  <form method="post">
+    <div><label>Course Name: <input name="name" value="{{ course.name }}" required></label></div>
+    <div><label>Duration (months): <input name="duration_months" type="number" value="{{ course.duration_months }}" required></label></div>
+    <div><label>Total Seats: <input name="seats_total" type="number" value="{{ course.seats_total }}" required></label></div>
+    <div><label>Description:<br><textarea name="description" rows="3">{{ course.description }}</textarea></label></div>
+    <button type="submit">Save</button> &nbsp; <a href="{{ url_for('courses') }}">Cancel</a>
+  </form>
+{% endblock %}

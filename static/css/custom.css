@@ -1,0 +1,41 @@
+/* Applicant detail page polish */
+.avatar-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 28px;
+  box-shadow: 0 6px 18px rgba(20,20,50,0.06);
+  margin: 0 auto;
+}
+
+/* status badge slightly larger */
+.status-badge {
+  padding: .45rem .6rem;
+  border-radius: .6rem;
+  font-weight: 600;
+}
+
+/* tighter dl layout */
+dt { color: #6b7280; }
+dd { margin-left: 0; }
+.card .display-6 { font-size: 1.6rem; font-weight:700; }
+
+/* make buttons consistent */
+.btn-outline-primary { border-radius: .45rem; }
+/* hide the avatar circle and collapse its column so layout looks normal */
+#avatar, .flex-shrink-0 {
+  display: none !important;
+}
+
+brand{
+    color: blueviolet;
+}
+/* ensure main card stretches to full width when avatar hidden */
+.card-body.d-flex > .flex-grow-1 { width: 100%; }
+
+/* reduce left gap that was created by avatar column */
+.row.my-4 .col-lg-8 { padding-left: 0.5rem; }

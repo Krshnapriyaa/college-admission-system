@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0"><i class="fa-solid fa-book-open me-2 text-primary"></i> Courses</h2>
+    <small class="text-muted">Manage courses and seat availability</small>
+  </div>
+  <div>
+    <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#modalAddCourse"><i class="fa-solid fa-plus"></i> New Course</button>
+    <a href="{{ url_for('reports') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-chart-pie"></i> Reports</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Course Cards -->
+  {% for c in courses %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h5 class="card-title mb-0">{{ c.name }}</h5>
+            <small class="text-muted">{{ c.duration_months }} months</small>
+          </div>
+          <div class="text-end">
+            <div class="mb-1">
+              <span class="badge bg-{{ 'danger' if c.seats_available()==0 else ('warning' if c.seats_available()<=5 else 'success') }}">
+                {{ c.seats_available() }} available
+              </span>
+            </div>
+            <div class="text-muted small">Seats: {{ c.seats_taken }}/{{ c.seats_total }}</div>
+          </div>
+        </div>
+
+        <p class="card-text text-muted small mb-3">{{ c.description or 'No description provided.' }}</p>
+
+        <div class="mt-auto">
+          <div class="mb-3">
+            <div class="progress" style="height:10px;">
+              <div class="progress-bar" role="progressbar"
+                   style="width: {{ (c.seats_taken / (c.seats_total or 1)) * 100 }}%;"
+                   aria-valuenow="{{ c.seats_taken }}" aria-valuemin="0" aria-valuemax="{{ c.seats_total }}">
+              </div>
+            </div>
+            <div class="d-flex justify-content-between small text-muted mt-1">
+              <div><i class="fa-solid fa-users"></i> {{ c.seats_taken }} taken</div>
+              <div><i class="fa-solid fa-chair"></i> {{ c.seats_total }} total</div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('edit_course', id=c.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+
+            <form method="post" action="{{ url_for('delete_course', id=c.id) }}" onsubmit="return confirm('Delete this course?');" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+            </form>
+
+            <a href="{{ url_for('applicants') }}?course_id={{ c.id }}" class="btn btn-sm btn-outline-secondary ms-auto"><i class="fa-solid fa-users-line"></i> View Applicants</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body text-center text-muted">
+        No courses found. Click <strong>New Course</strong> to add your first course.
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- include modals (if you use _modals.html) -->
+{% include '_modals.html' %}
+{% endblock %}

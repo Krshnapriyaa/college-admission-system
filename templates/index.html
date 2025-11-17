@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Dashboard</h2>
+    <small class="text-muted">Admission portal overview</small>
+  </div>
+  <div>
+    <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#modalAddCourse"><i class="fa-solid fa-book-medical"></i> Add Course</button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddApplicant"><i class="fa-solid fa-user-plus"></i> Add Applicant</button>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Courses</h5>
+        <div class="row gy-2">
+          {% for c in courses %}
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <h6 class="mb-1">{{ c.name }}</h6>
+                  <small class="text-muted">Duration: {{ c.duration_months }} months</small>
+                </div>
+                <div style="min-width:220px">
+                  <div class="d-flex justify-content-between mb-1 small">
+                    <div>Seats: {{ c.seats_taken }}/{{ c.seats_total }}</div>
+                    <div><span class="badge bg-{{ 'danger' if c.seats_available()==0 else ('warning' if c.seats_available()<=5 else 'success') }}">{{ c.seats_available() }} available</span></div>
+                  </div>
+                  <div class="progress" style="height:10px">
+                    <div class="progress-bar" role="progressbar" style="width: {{ (c.seats_taken / (c.seats_total or 1)) * 100 }}%" aria-valuenow="{{ c.seats_taken }}" aria-valuemin="0" aria-valuemax="{{ c.seats_total }}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="col-12 text-muted">No courses yet. Add one.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Quick Stats</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><i class="fa-solid fa-users me-2 text-primary"></i> Applicants: <strong>{{ applicants_count }}</strong></li>
+          <li class="mb-2"><i class="fa-solid fa-book-open me-2 text-success"></i> Courses: <strong>{{ courses|length }}</strong></li>
+          <li class="mb-2"><i class="fa-solid fa-bell me-2 text-warning"></i> Recent: <small class="text-muted">See Applicants page</small></li>
+        </ul>
+        <a href="{{ url_for('applicants') }}" class="btn btn-outline-primary btn-sm">View Applicants <i class="fa-solid fa-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include '_modals.html' %}
+{% endblock %}

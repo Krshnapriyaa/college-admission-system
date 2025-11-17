@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Add Applicant</h2>
+  <form method="post">
+    <div><label>Full name: <input name="full_name" required></label></div>
+    <div><label>Email: <input name="email" type="email" required></label></div>
+    <div><label>Phone: <input name="phone"></label></div>
+    <div><label>DOB (YYYY-MM-DD): <input name="dob"></label></div>
+    <div><label>Course:
+      <select name="course_id" required>
+        {% for c in courses %}
+          <option value="{{ c.id }}">{{ c.name }} (Available: {{ c.seats_available() }})</option>
+        {% endfor %}
+      </select>
+    </label></div>
+    <div><label>Remarks:<br><textarea name="remarks" rows="2"></textarea></label></div>
+    <button type="submit">Submit Application</button> &nbsp; <a href="{{ url_for('applicants') }}">Cancel</a>
+  </form>
+{% endblock %}

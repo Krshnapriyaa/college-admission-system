@@ -1,0 +1,53 @@
+<!-- Add Course Modal -->
+<div class="modal fade" id="modalAddCourse" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_course') }}" data-validate="simple">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-book"></i> Add Course</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Course name <input name="name" class="form-control" required></label></div>
+        <div class="row g-2">
+          <div class="col"><label class="form-label">Duration (months) <input name="duration_months" type="number" value="24" class="form-control"></label></div>
+          <div class="col"><label class="form-label">Seats total <input name="seats_total" type="number" value="30" class="form-control"></label></div>
+        </div>
+        <div class="mt-2"><label class="form-label">Description <textarea name="description" class="form-control" rows="2"></textarea></label></div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Applicant Modal -->
+<div class="modal fade" id="modalAddApplicant" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_applicant') }}" data-validate="simple">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-user-plus"></i> Add Applicant</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Full name <input name="full_name" class="form-control" required></label></div>
+        <div class="mb-2"><label class="form-label">Email <input name="email" type="email" class="form-control" required></label></div>
+        <div class="mb-2"><label class="form-label">Phone <input name="phone" class="form-control"></label></div>
+        <div class="mb-2"><label class="form-label">DOB <input name="dob" class="form-control" placeholder="YYYY-MM-DD"></label></div>
+        <div class="mb-2"><label class="form-label">Course
+          <select name="course_id" class="form-select" required>
+            {% for c in Course.query.order_by(Course.name).all() %}
+              <option value="{{ c.id }}">{{ c.name }} (Available: {{ c.seats_available() }})</option>
+            {% endfor %}
+          </select>
+        </label></div>
+        <div class="mb-2"><label class="form-label">Remarks <textarea name="remarks" class="form-control" rows="2"></textarea></label></div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
