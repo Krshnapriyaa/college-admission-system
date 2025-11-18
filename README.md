@@ -86,21 +86,21 @@ pip install -r requirements.txt
 ```
 python app.py initdb
 ```
-✔ Creates tables  
-✔ Inserts sample data  
-✔ Creates trigger + backup tables
+ Creates tables  
+ Inserts sample data  
+ Creates trigger + backup tables
 
 ### **4️ Start Server**
 ```
 python app.py
 ```
-Open Browser 👉 **http://127.0.0.1:5000**
+Open Browser -> **http://127.0.0.1:5000**
 
 ---
 
 ##  Reports Generated
   
-✔ Application Status Distribution (Pie Chart)  
+ Application Status Distribution (Pie Chart)  
 
 ---
 
