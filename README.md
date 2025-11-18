@@ -94,7 +94,7 @@ python app.py initdb
 ```
 python app.py
 ```
-Open Browser -> **http://127.0.0.1:5000**
+Open Browser → **http://127.0.0.1:5000**
 
 ---
 
